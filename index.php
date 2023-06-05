@@ -9,6 +9,17 @@ unset($_SESSION['qty']);
 
 require "../DP/src/Model/Model.php";
 $config = new Model();
+$config->mustBeLoggedIn();
+if (isset($_SESSION['user_id'])) {
+   //get user detail
+   $user_id = $_SESSION['user_id'];
+   $sql = "SELECT * FROM `users` WHERE id = '$user_id'";
+   $query = $conn->query($sql);
+   if ($query->num_rows == 0 ) {
+       return header('location: logout.php');
+   }
+   $user = $query->fetch_object();
+}
 $products = $config->read("products");
 ?>
 <!DOCTYPE html>
