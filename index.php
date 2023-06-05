@@ -208,9 +208,9 @@ $products = $config->read("products");
                               <?php foreach ($products as $product) { ?>
                            <div class="col-lg-4 col-md-2">
                               <div class="box_main">
-                                 <!-- <h4 class="shirt_text">Man T -shirt</h4> -->
+                                 <h4 class="shirt_text"><?= $product['name']?></h4>
                                  <p class="price_text">Price  <span style="color: #262626;">₦ <?= $product['price']?></span></p>
-                                 <div class="tshirt_img"><img src="images/<?= $product['name']?>"></div>
+                                 <div class="tshirt_img"><img src="images/<?= $product['img']?>"></div>
                                  <div class="btn_main">
                                     <div class="buy_bt"><a href="addCart.php?id=<?= $product['id']; ?>">Add to cart</a></div>
                                     <div class="seemore_bt"><a href="#"><?= $product['quantity']?> pieces</a></div>
