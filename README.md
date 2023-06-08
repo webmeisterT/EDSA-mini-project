@@ -2,8 +2,15 @@
 
 ## This is a TDD application
 
-## Other Principles used are: KISS, YAGNI, Single Responsibility Principle
+## Other Principles used are: TDD, DRY, KISS, YAGNI, MVP, CI/CD, Single Responsibility Principle
 
-## The application allow users to browse products and add items to a shopping cart
+## OOP Functionality used are: Abstraction, Encapsulation, traits
+
+## This application allow users to
+##  1.   register
+##  2.   login
+##  3.   browse products 
+##  4.   add items to a shopping cart
+##  5.   checkout from shopping cart
 
 
