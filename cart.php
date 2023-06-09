@@ -125,12 +125,14 @@ use App\Model\ReadRecord;
         <div class="col-lg-12">
           <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Order summary </div>
           <div class="p-4">
-            <p class="font-italic mb-4">Shipping and additional costs are calculated based on values you have entered.</p>
+            <!-- <p class="font-italic mb-4">Shipping and additional costs are calculated based on values you have entered.</p> -->
             <ul class="list-unstyled mb-4">
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Subtotal </strong><strong>₦ 0.00</strong></li>
-              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>₦ 10.00</strong></li> -->
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>₦ 0.00</strong></li>
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total</strong>
+              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total Items </strong>
+              <h5 class="font-weight-bold"><?=count($_SESSION['cart'])?></h5>
+            </li>
+              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>₦ 500.00</strong></li> -->
+              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>₦ 0.00</strong></li> -->
+              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total Price</strong>
                 <h5 class="font-weight-bold">₦ 0.00</h5>
               </li>
             </ul><a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Procceed to checkout</a>
