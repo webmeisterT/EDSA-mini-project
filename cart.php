@@ -1,7 +1,7 @@
 <?php
 session_start();
-require "../DP/src/Model/Model.php";
-$config = new Model();
+require "vendor/autoload.php";
+use App\Model\ReadRecord;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,8 +79,13 @@ $config = new Model();
                 }
                 print_r($_SESSION['qty']);
                 $ids = implode(',',$_SESSION['cart']);
-                $products = $config->read("products", "*","id IN ($ids)");
-                
+                $readrecs = new ReadRecord;
+                $readrecs->setColumn("*");
+                $readrecs->setTable("products");
+                $readrecs->setWhere("id IN ($ids)");
+                $readrecs->setData([]);
+                $products = $readrecs->readRecord();
+                // $products = $config->read("products", "*","id IN ($ids)");
                 foreach ($products as $prod) { ?>
                 <tr>
                   <th scope="row" class="border-0">
@@ -122,11 +127,11 @@ $config = new Model();
           <div class="p-4">
             <p class="font-italic mb-4">Shipping and additional costs are calculated based on values you have entered.</p>
             <ul class="list-unstyled mb-4">
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Subtotal </strong><strong>$390.00</strong></li>
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>$10.00</strong></li>
-              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>$0.00</strong></li>
+              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Subtotal </strong><strong>₦ 0.00</strong></li>
+              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>₦ 10.00</strong></li> -->
+              <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>₦ 0.00</strong></li>
               <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total</strong>
-                <h5 class="font-weight-bold">$400.00</h5>
+                <h5 class="font-weight-bold">₦ 0.00</h5>
               </li>
             </ul><a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Procceed to checkout</a>
           </div>

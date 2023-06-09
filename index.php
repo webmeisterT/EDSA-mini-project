@@ -28,9 +28,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- bootstrap css -->
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
     <title>Login</title>
 </head>
 <body>
@@ -38,7 +36,7 @@
 <div class="vh-100 d-flex justify-content-center align-items-center container pt-5 mt-5">
   <div class="card mt-5" style="width: 40rem;">
     <div class="card-body">
-      <h1 class="card-title text-center bg-primary text-white p-3">Login Page</h1>
+      <h1 class="card-title text-center bg-primary text-white p-3">Login</h1>
       <?php if (isset($_SESSION['user_error'])) : ?>
       <div class="alert alert-danger">
         <strong><?= $_SESSION['user_error']?></strong>
