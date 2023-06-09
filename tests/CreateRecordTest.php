@@ -13,7 +13,7 @@ final class CreateRecordTest extends TestCase
         // $newrec->setTable("products");
         // $newrec->getTable();
         // $newrec->setValue("	
-        // 'TestCase', '7500.00', '20', 'dress-shirt-img.png'");
+        // 'Lays Snacks', '180.00', '300', 'snacks.png'");
         // $newrec->getValue();
         // $newrec->setData([]);
         // $newrec->getData();

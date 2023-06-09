@@ -1,288 +1,80 @@
-<?php
-session_start();
-require "vendor/autoload.php";
-use App\Model\ReadRecord;
+<?php 
+  session_start();
+  if (isset($_SESSION['is_logged_in'])) {
+    header('location: store.php');
+  }
+  require "vendor/autoload.php";
+  use App\User\ProcessLogin;
 
-//initialize cart if not set or is unset
-if(!isset($_SESSION['cart'])){
-   $_SESSION['cart'] = array();
-}
-//unset quantity
-unset($_SESSION['qty']);
+  if ($_SERVER['REQUEST_METHOD'] === "POST") {  
+    $user = ProcessLogin::processUser($_POST['email'], $_POST['password']);
+    if ($user === "register.php") {
+      $_SESSION['user_error'] = "Please register before using this application";
+      header('location: register.php');
+    }
+    elseif (!$user) {
+      $_SESSION['user_error'] = "Invalid credentials! Please enter a valid password/email";
+    } else {
+      $_SESSION['user'] = $user;
+      $_SESSION['is_logged_in'] = true;
+      header('location: store.php');
+    }
+  }
 
-// Get all products from the DB
-$readrec = new ReadRecord();
-$readrec->setColumn("*");
-$readrec->setTable("products");
-$readrec->setWhere("1");
-$readrec->setData([]);
-$products = $readrec->readRecord();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <!-- basic -->
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <!-- mobile metas -->
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-      <!-- site metas -->
-      <title>Eflyer</title>
-      <meta name="keywords" content="">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <!-- bootstrap css -->
-      <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-      <!-- style css -->
-      <link rel="stylesheet" type="text/css" href="css/style.css">
-      <!-- Responsive-->
-      <link rel="stylesheet" href="css/responsive.css">
-      <!-- fevicon -->
-      <link rel="icon" href="images/fevicon.png" type="image/gif" />
-      <!-- Scrollbar Custom CSS -->
-      <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
-      <!-- Tweaks for older IEs-->
-      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-      <!-- fonts -->
-      <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
-      <!-- font awesome -->
-      <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-      <!--  -->
-      <!-- owl stylesheets -->
-      <link href="https://fonts.googleapis.com/css?family=Great+Vibes|Poppins:400,700&display=swap&subset=latin-ext" rel="stylesheet">
-      <link rel="stylesheet" href="css/owl.carousel.min.css">
-      <link rel="stylesoeet" href="css/owl.theme.default.min.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-   </head>
-   <body>
-      <!-- banner bg main start -->
-      <div class="banner_bg_main">
-         <!-- header top section start -->
-         <div class="container">
-            <div class="header_section_top">
-               <div class="row">
-                  <div class="col-sm-12">
-                     <div class="custom_menu">
-                        <ul>
-                           <li><a href="#">Best Sellers</a></li>
-                           <li><a href="#">Gift Ideas</a></li>
-                           <li><a href="#">New Releases</a></li>
-                           <li><a href="#">Today's Deals</a></li>
-                           <li><a href="#">Customer Service</a></li>
-                        </ul>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <!-- header top section start -->
-         <!-- logo section start -->
-         <div class="logo_section">
-            <div class="container">
-               <div class="row">
-                  <div class="col-sm-12">
-                     <div class="logo"><a href="index.php"><img src="images/logo.png"></a></div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <!-- logo section end -->
-         <!-- header section start -->
-         <div class="header_section">
-            <div class="container">
-               <div class="containt_main">
-                  <div id="mySidenav" class="sidenav">
-                     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                     <a href="index.php">Home</a>
-                     <a href="fashion.php">Fashion</a>
-                     <a href="electronic.php">Electronic</a>
-                     <a href="jewellery.php">Jewellery</a>
-                  </div>
-                  <span class="toggle_icon" onclick="openNav()"><img src="images/toggle-icon.png"></span>
-                  <div class="dropdown">
-                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Category 
-                     </button>
-                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                     </div>
-                  </div>
-                  <div class="main">
-                     <!-- Another variation with a button -->
-                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search this blog">
-                        <div class="input-group-append">
-                           <button class="btn btn-secondary" type="button" style="background-color: #f26522; border-color:#f26522 ">
-                           <i class="fa fa-search"></i>
-                           </button>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="header_box">
-                     <div class="lang_box ">
-                        <a href="#" title="Language" class="nav-link" data-toggle="dropdown" aria-expanded="true">
-                        <img src="images/flag-uk.png" alt="flag" class="mr-2 " title="United Kingdom"> English <i class="fa fa-angle-down ml-2" aria-hidden="true"></i>
-                        </a>
-                        <div class="dropdown-menu ">
-                           <a href="#" class="dropdown-item">
-                           <img src="images/flag-france.png" class="mr-2" alt="flag">
-                           French
-                           </a>
-                        </div>
-                     </div>
-                     <div class="login_menu">
-                        <ul>
-                           <li><a href="cart.php">
-                              <i class="fa fa-shopping-cart" aria-hidden="true"></i><sup><span class="font-weight-bold"><?= count($_SESSION['cart']); ?></span></sup>
-                              <span class="padding_10">Cart</span></a>
-                           </li>
-                           <li><a href="#">
-                              <i class="fa fa-user" aria-hidden="true"></i>
-                              <span class="padding_10">User</span></a>
-                           </li>
-                        </ul>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <!-- header section end -->
-         <!-- banner section start -->
-         <div class="banner_section layout_padding">
-            <div class="container">
-               <div id="my_slider" class="carousel slide" data-ride="carousel">
-                  <div class="carousel-inner">
-                     <div class="carousel-item active">
-                        <div class="row">
-                           <div class="col-sm-12">
-                              <h1 class="banner_taital">Get Start <br>Your favriot shoping</h1>
-                              <div class="buynow_bt"><a href="#">Buy Now</a></div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div class="row">
-                           <div class="col-sm-12">
-                              <h1 class="banner_taital">Get Start <br>Your favriot shoping</h1>
-                              <div class="buynow_bt"><a href="#">Buy Now</a></div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="carousel-item">
-                        <div class="row">
-                           <div class="col-sm-12">
-                              <h1 class="banner_taital">Get Start <br>Your favriot shoping</h1>
-                              <div class="buynow_bt"><a href="#">Buy Now</a></div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <a class="carousel-control-prev" href="#my_slider" role="button" data-slide="prev">
-                  <i class="fa fa-angle-left"></i>
-                  </a>
-                  <a class="carousel-control-next" href="#my_slider" role="button" data-slide="next">
-                  <i class="fa fa-angle-right"></i>
-                  </a>
-               </div>
-            </div>
-         </div>
-         <!-- banner section end -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    <title>Login</title>
+</head>
+<body>
+    
+<div class="vh-100 d-flex justify-content-center align-items-center container pt-5 mt-5">
+  <div class="card mt-5" style="width: 40rem;">
+    <div class="card-body">
+      <h1 class="card-title text-center bg-primary text-white p-3">Login Page</h1>
+      <?php if (isset($_SESSION['user_error'])) : ?>
+      <div class="alert alert-danger">
+        <strong><?= $_SESSION['user_error']?></strong>
       </div>
-      <!-- banner bg main end -->
-      <!-- fashion section start -->
-      <div class="fashion_section">
-         <div id="main_slider" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-               <div class="carousel-item active">
-                  <div class="container">
-                  <?php
-                              //info message
-                              if(isset($_SESSION['message'])){
-                                 ?>
-                                       <div class="alert alert-info text-center">
-                                          <?php echo $_SESSION['message']; ?>
-                                       </div>
-                                 <?php
-                                 unset($_SESSION['message']);
-                              }?>
-                     <!-- <h1 class="fashion_taital">Man & Woman Fashion</h1> -->
-                     <div class="fashion_section_2">
-                        <div class="row">
-                           
-                              <?php foreach ($products as $product) { ?>
-                           <div class="col-lg-4 col-md-2">
-                              <div class="box_main">
-                                 <h4 class="shirt_text"><?= $product['name']?></h4>
-                                 <p class="price_text">Price  <span style="color: #262626;">₦ <?= $product['price']?></span></p>
-                                 <div class="tshirt_img"><img src="images/<?= $product['img']?>"></div>
-                                 <div class="btn_main">
-                                    <div class="buy_bt"><a href="addCart.php?id=<?= $product['id']; ?>">Add to cart</a></div>
-                                    <div class="seemore_bt"><a href="#"><?= $product['quantity']?> pieces</a></div>
-                                 </div>
-                              </div>
-                           </div>
-                        <?php } ?>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <a class="carousel-control-prev" href="#main_slider" role="button" data-slide="prev">
-            <i class="fa fa-angle-left"></i>
-            </a>
-            <a class="carousel-control-next" href="#main_slider" role="button" data-slide="next">
-            <i class="fa fa-angle-right"></i>
-            </a>
-         </div>
+      <?php 
+        unset($_SESSION['user_error']);
+        endif 
+      ?>
+      <?php if (isset($_SESSION['user_msg'])) : ?>
+      <div class="alert alert-success">
+        <strong><?= $_SESSION['user_msg']?></strong>
       </div>
-      <!-- footer section start -->
-      <div class="footer_section layout_padding">
-         <div class="container">
-            <div class="footer_logo"><a href="index.php"><img src="images/footer-logo.png"></a></div>
-            <div class="input_bt">
-               <input type="text" class="mail_bt" placeholder="Your Email" name="Your Email">
-               <span class="subscribe_bt" id="basic-addon2"><a href="#">Subscribe</a></span>
-            </div>
-            <div class="footer_menu">
-               <ul>
-                  <li><a href="#">Best Sellers</a></li>
-                  <li><a href="#">Gift Ideas</a></li>
-                  <li><a href="#">New Releases</a></li>
-                  <li><a href="#">Today's Deals</a></li>
-                  <li><a href="#">Customer Service</a></li>
-               </ul>
-            </div>
-            <div class="location_main">Help Line  Number : <a href="#">+1 1800 1200 1200</a></div>
-         </div>
-      </div>
-      <!-- footer section end -->
-      <!-- copyright section start -->
-      <div class="copyright_section">
-         <div class="container">
-            <p class="copyright_text">© 2020 All Rights Reserved. Design by <a href="https://html.design">Free html  Templates</a></p>
-         </div>
-      </div>
-      <!-- copyright section end -->
-      <!-- Javascript files-->
-      <script src="js/jquery.min.js"></script>
-      <script src="js/popper.min.js"></script>
-      <script src="js/bootstrap.bundle.min.js"></script>
-      <script src="js/jquery-3.0.0.min.js"></script>
-      <script src="js/plugin.js"></script>
-      <!-- sidebar -->
-      <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="js/custom.js"></script>
-      <script>
-         function openNav() {
-           document.getElementById("mySidenav").style.width = "250px";
-         }
-         
-         function closeNav() {
-           document.getElementById("mySidenav").style.width = "0";
-         }
-      </script>
-   </body>
+      <?php 
+        unset($_SESSION['user_msg']);
+        endif 
+      ?>
+      <form action="" method="post">
+        <div class="form-group">
+          <input type="email" name="email" id="" class="form-control" placeholder="Your Email" aria-describedby="helpId" required>              
+          <small id="helpId" class="text-muted">Enter the email you registered with</small>
+        </div>
+
+        <div class="form-group">
+          <input type="password" name="password" id="" class="form-control" placeholder="Your Password" aria-describedby="helpId" minlength="8" required>
+          <small id="helpId" class="text-muted">Password must not be less than 8</small>
+        </div>            
+        <button type="submit" class="btn btn-primary mr-5">Submit</button>
+        <a href="register.php">No account yet? Register here</a>         
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery-3.0.0.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script> 
+</body>
 </html>

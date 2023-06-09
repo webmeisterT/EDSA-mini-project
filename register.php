@@ -1,8 +1,24 @@
 <?php 
-    session_start();
-    if (isset($_SESSION['is_logged_in'])) {
-        header('location: store.php');
+  session_start();
+  if (isset($_SESSION['is_logged_in'])) {
+    return header('location: store.php');
+  }
+require "vendor/autoload.php";
+  use App\User\ProcessRegister;
+
+  if ($_SERVER['REQUEST_METHOD'] === "POST") {  
+    $created = ProcessRegister::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['password']);
+    if ($created === "user exists") {
+      $_SESSION['user_error'] = "Invalid credentials! please enter a valid password/username";
     }
+    elseif (!$created) {
+      $_SESSION['user_error'] = "Your registration is not successful! please try again later";
+    } else {
+      header('location: index.php');
+      $_SESSION['user_msg'] = "You have successfully registered, please login to continue";
+    }
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,60 +29,41 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Register</title>
 </head>
-<body class="bg-dark">
+<body>
     
-<div class="vh-100 d-flex align-items-center justify-content-center pt-3">
-        <div class="card" style="width: 60%;">
-            <div class="card-body">
-                <h1 class="card-title text-center bg-light p-3">Registration Page</h1>
-        <?php
-          if(isset($_SESSION['error'])){
-            ?>
-              <div class="alert alert-danger">
-                <strong>Sorry!</strong> <?=$_SESSION['error']?>
-              </div>
-              <?php
-              unset($_SESSION['error']);
-          }
-
-          if (isset($_SESSION['errors'])) {
-            foreach ($_SESSION['errors'] as $key => $value) {
-              ?>
-              <div class="alert alert-danger">
-                <?=$value?>
-              </div>
-              <?php
-              unset($_SESSION['errors']);
-            }
-          }
-        ?>
-        <form action="register_action.php" method="post">
-            <div class="form-group">
-              <input type="text" name="fname" id="" class="form-control" placeholder=" Enter Your First Name">              
-            </div>
-
-            <div class="form-group">
-              <input type="text" name="lname" id="" class="form-control" placeholder=" Enter Your Last Name">              
-            </div>
-
-            <div class="form-group">
-              <input type="text" name="username" id="" class="form-control" placeholder=" Enter Your Username">              
-            </div>
-
-            <div class="form-group">
-              <input type="email" name="email" id="" class="form-control" placeholder=" Enter Your Email">              
-            </div>
-
-            <div class="form-group">
-              <input type="password" name="password" id="" class="form-control" placeholder=" Enter Your Password" minlength="4">
-              <small id="helpId" class="text-muted">Password must be more than 4</small>
-            </div>
-            
-            <button type="submit" class="btn btn-success">Submit</button>
-            
-        </form>
-        </div>
+<div class="vh-100 d-flex justify-content-center align-items-center container pt-5 mt-5">
+  <div class="card mt-5" style="width: 40rem;">
+    <div class="card-body">
+      <h1 class="card-title text-center bg-primary text-white p-3">Registration Page</h1>
+      <?php if (isset($_SESSION['user_error'])) : ?>
+      <div class="alert alert-danger">
+        <strong><?= $_SESSION['user_error']?></strong>
+      </div>
+      <?php 
+        unset($_SESSION['user_error']);
+        endif 
+      ?>
+      <form action="" method="post">
+          <div class="form-group">
+            <input type="text" name="firstname" id="" class="form-control" placeholder=" Enter Your First Name">              
+          </div>
+          <div class="form-group">
+            <input type="text" name="lastname" id="" class="form-control" placeholder=" Enter Your Last Name">              
+          </div>
+          <div class="form-group">
+            <input type="email" name="email" id="" class="form-control" placeholder=" Enter Your Email">              
+          </div>
+          <div class="form-group">
+            <input type="password" name="password" id="" class="form-control" placeholder=" Enter Your Password" minlength="8">
+            <small id="helpId" class="text-muted">Password must not be less than 8</small>
+          </div>
+          
+          <button type="submit" class="btn btn-primary mr-5">Submit</button>
+        <a href="index.php">Already registered? Login here</a>         
+          
+      </form>
     </div>
+  </div>
 </div>
     
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

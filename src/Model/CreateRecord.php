@@ -14,17 +14,4 @@ class CreateRecord extends ConnectDB{
         return $stmt->execute($this->data);
     }
 
-public function sanitize(string $var)
-{
-    return htmlspecialchars(stripslashes(trim($var)));
-}
-
-
-public function mustBeLoggedIn()
-{
-    if (!isset($_SESSION['is_logged_in'])) {
-        $_SESSION['error'] = "Please login to continue!";
-        return header('location: login.php');
-    }
-}
 }
