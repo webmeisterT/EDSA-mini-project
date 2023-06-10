@@ -33,12 +33,12 @@ use App\Model\ReadRecord;
 				</div>
 				<?php
 				unset($_SESSION['message']);
-			}
- 
+			} 
 			?>
 
   <!-- For demo purpose -->
   <div class="container text-white py-5 text-center">
+  <a href="store.php"><img src="images/logo.png"></a>
     <h1 class="display-4">Shopping cart</h1>
   </div>
   <!-- End -->
@@ -77,7 +77,7 @@ use App\Model\ReadRecord;
                 if(!isset($_SESSION['qty'])){
                     $_SESSION['qty'] = 1;
                 }
-                print_r($_SESSION['qty']);
+                // print_r($_SESSION['cart']);
                 $ids = implode(',',$_SESSION['cart']);
                 $readrecs = new ReadRecord;
                 $readrecs->setColumn("*");

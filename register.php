@@ -9,7 +9,7 @@ require "vendor/autoload.php";
   if ($_SERVER['REQUEST_METHOD'] === "POST") {  
     $created = ProcessRegister::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['password']);
     if ($created === "user exists") {
-      $_SESSION['user_error'] = "Invalid credentials! please enter a valid password/username";
+      $_SESSION['user_error'] = "A user with this email already exists, Please login to continue";
     }
     elseif (!$created) {
       $_SESSION['user_error'] = "Your registration is not successful! please try again later";
@@ -31,10 +31,10 @@ require "vendor/autoload.php";
 </head>
 <body>
     
-<div class="vh-100 d-flex justify-content-center align-items-center container pt-5 mt-5">
+<div class="vh-100 d-flex justify-content-center align-items-center container pt-4 mt-lg-5">
   <div class="card mt-5" style="width: 40rem;">
     <div class="card-body">
-      <h1 class="card-title text-center bg-primary text-white p-3">Registration Page</h1>
+      <h3 class="card-title text-center bg-primary text-white pt-1 pb-2">Registration Page</h3>
       <?php if (isset($_SESSION['user_error'])) : ?>
       <div class="alert alert-danger">
         <strong><?= $_SESSION['user_error']?></strong>
@@ -59,7 +59,7 @@ require "vendor/autoload.php";
           </div>
           
           <button type="submit" class="btn btn-primary mr-5">Submit</button>
-        <a href="index.php">Already registered? Login here</a>         
+        <a href="index.php">Click here to Login</a>         
           
       </form>
     </div>

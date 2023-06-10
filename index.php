@@ -8,12 +8,8 @@
 
   if ($_SERVER['REQUEST_METHOD'] === "POST") {  
     $user = ProcessLogin::processUser($_POST['email'], $_POST['password']);
-    if ($user === "register.php") {
-      $_SESSION['user_error'] = "Please register before using this application";
-      header('location: register.php');
-    }
-    elseif (!$user) {
-      $_SESSION['user_error'] = "Invalid credentials! Please enter a valid password/email";
+   if (!$user) {
+      $_SESSION['user_error'] = "Invalid credentials! Please enter a valid email and password";
     } else {
       $_SESSION['user'] = $user;
       $_SESSION['is_logged_in'] = true;
@@ -33,10 +29,10 @@
 </head>
 <body>
     
-<div class="vh-100 d-flex justify-content-center align-items-center container pt-5 mt-5">
+<div class="vh-100 d-flex justify-content-center align-items-center container pt-4 mt-lg-5">
   <div class="card mt-5" style="width: 40rem;">
     <div class="card-body">
-      <h1 class="card-title text-center bg-primary text-white p-3">Login</h1>
+      <h3 class="card-title text-center bg-primary text-white pt-1 pb-2">Login</h3>
       <?php if (isset($_SESSION['user_error'])) : ?>
       <div class="alert alert-danger">
         <strong><?= $_SESSION['user_error']?></strong>
@@ -64,7 +60,7 @@
           <small id="helpId" class="text-muted">Password must not be less than 8</small>
         </div>            
         <button type="submit" class="btn btn-primary mr-5">Submit</button>
-        <a href="register.php">No account yet? Register here</a>         
+        <a href="register.php">Click here to Register</a>         
       </form>
     </div>
   </div>
