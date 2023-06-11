@@ -4,7 +4,8 @@ use App\User\CheckUser;
 
 class ProcessLogin {
     
-    public static function processUser (string $email, string $password) {
+    public static function processUser (string $email, string $password)
+     {
         $user = CheckUser::userExist($email);
         if (!$user) {
             return false;
