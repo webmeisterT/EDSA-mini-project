@@ -92,6 +92,7 @@ $products = $readrec->readRecord();
          <div class="header_section">
             <div class="container">               
                <div class="containt_main">
+                  <a href="orderview.php" class="btn btn-danger">Check past orders</a>
                   <div class="main">
                      <!-- Another variation with a button -->
                      <div class="input-group">

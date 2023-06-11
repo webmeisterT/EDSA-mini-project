@@ -26,4 +26,4 @@ foreach ($_SESSION['cart'] as $key => $crt) {
 unset($_SESSION['total']);
 unset($_SESSION['cart']);
 unset($_SESSION['qty_array']);
-header('location: store.php');
+header('location: orderview.php');

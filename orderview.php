@@ -67,7 +67,7 @@ use App\Model\ReadRecord;
                 $readrecs = new ReadRecord;
                 $readrecs->setColumn("t1.name, t1.img, t2.quantity, t2.total_price, t2.order_time");
                 $readrecs->setTable("products");
-                $readrecs->setWhere("t2.user_id=$user_id");
+                $readrecs->setWhere("t2.user_id=$user_id ORDER BY t2.order_time DESC");
                 $readrecs->setData([]);
                 $orders = $readrecs->joinRecords("id", "product_id", "orders");
               if ($orders) {
