@@ -5,9 +5,33 @@
   }
 require "vendor/autoload.php";
   use App\User\ProcessRegister;
+use App\Model\FileUpload;
 
-  if ($_SERVER['REQUEST_METHOD'] === "POST") {  
-    $created = ProcessRegister::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['email'], $_POST['password']);
+
+  if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    if (empty($_FILES['passport']['name'])) {
+      $error = "Choose An Image To Upload!";
+    } else {
+    $file_upl = new FileUpload('passport');
+      $file_upl->setName();
+      $file_upl->setTempName();
+      $file_upl->setSize();
+      $file_upl->setExtension();
+      $file_upl->setFilename();
+      $file_upl->setFilePath("uploads/");
+      $uploaded = $file_upl->uploadTheFile();
+      if ($uploaded->errorUpload()) {
+          $_SESSION['user_error'] = $uploaded->getError();
+          return header('location:register.php');
+      }
+      if (!$uploaded->isUploaded()) {
+          $_SESSION['user_error'] = "Sorry, your file cannot be uploaded, try again later";
+          return header('location:register.php');
+        }
+
+      $passport = $uploaded->getFilename();
+    }
+    $created = ProcessRegister::registerUser($_POST['firstname'], $_POST['lastname'], $_POST['email'], $passport, $_POST['password']);
     if ($created === "user exists") {
       $_SESSION['user_error'] = "A user with this email already exists, Please login to continue";
     }
@@ -36,25 +60,30 @@ require "vendor/autoload.php";
     <div class="card-body">
       <h3 class="card-title text-center bg-primary text-white pt-1 pb-2">Registration Page</h3>
       <?php if (isset($_SESSION['user_error'])) : ?>
-      <div class="alert alert-danger">
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong><?= $_SESSION['user_error']?></strong>
       </div>
       <?php 
         unset($_SESSION['user_error']);
         endif 
       ?>
-      <form action="" method="post">
+      <form action="" method="post" enctype="multipart/form-data">
           <div class="form-group">
-            <input type="text" name="firstname" id="" class="form-control" placeholder=" Enter Your First Name">              
+            <input type="text" name="firstname" id="" class="form-control" required placeholder=" Enter Your First Name">              
           </div>
           <div class="form-group">
-            <input type="text" name="lastname" id="" class="form-control" placeholder=" Enter Your Last Name">              
+            <input type="text" name="lastname" id="" class="form-control" required placeholder=" Enter Your Last Name">              
           </div>
           <div class="form-group">
-            <input type="email" name="email" id="" class="form-control" placeholder=" Enter Your Email">              
+            <input type="email" name="email" id="" class="form-control" required placeholder=" Enter Your Email">              
           </div>
           <div class="form-group">
-            <input type="password" name="password" id="" class="form-control" placeholder=" Enter Your Password" minlength="8">
+            <label for="passport">Upload a profile picture</label>
+            <input type="file" name="passport" id="passport" class="form-control" required>              
+          </div>
+          <div class="form-group">
+            <input type="password" name="password" id="" class="form-control" required placeholder=" Enter Your Password" minlength="8">
             <small id="helpId" class="text-muted">Password must not be less than 8</small>
           </div>
           

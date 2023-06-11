@@ -34,7 +34,8 @@
     <div class="card-body">
       <h3 class="card-title text-center bg-primary text-white pt-1 pb-2">Login</h3>
       <?php if (isset($_SESSION['user_error'])) : ?>
-      <div class="alert alert-danger">
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong><?= $_SESSION['user_error']?></strong>
       </div>
       <?php 
@@ -42,7 +43,8 @@
         endif 
       ?>
       <?php if (isset($_SESSION['user_msg'])) : ?>
-      <div class="alert alert-success">
+      <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong><?= $_SESSION['user_msg']?></strong>
       </div>
       <?php 

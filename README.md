@@ -4,7 +4,7 @@
 
 ## Other Principles used are: TDD, DRY, KISS, YAGNI, MVP, CI/CD, Single Responsibility Principle
 
-## OOP Functionality used are: Abstraction, Encapsulation, traits
+## OOP Functionality used are: Inheritance, Encapsulation, Traits
 
 ## This application allow users to
 ##  1.   register

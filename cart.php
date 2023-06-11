@@ -2,6 +2,8 @@
 session_start();
 require "vendor/autoload.php";
 use App\Model\ReadRecord;
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,27 +28,31 @@ use App\Model\ReadRecord;
    <body>
     <div class="px-4 px-lg-0">
     <?php 
-			if(isset($_SESSION['message'])){
-				?>
-				<div class="alert alert-info text-center">
-					<?php echo $_SESSION['message']; ?>
+			if(isset($_SESSION['message'])){ ?>
+				<div class="alert alert-info text-center alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+					<?php echo $_SESSION['message']; 
+                unset($_SESSION['message']); ?>
 				</div>
-				<?php
-				unset($_SESSION['message']);
-			} 
-			?>
+		<?php } ?>
 
   <!-- For demo purpose -->
-  <div class="container text-white py-5 text-center">
-  <a href="store.php"><img src="images/logo.png"></a>
-    <h1 class="display-4">Shopping cart</h1>
+  <div class="container text-white py-4 text-center">
+    <a href="store.php"><img src="images/logo.png"></a>
+    <!-- <h1 class="display-4">Shopping cart</h1> -->
   </div>
   <!-- End -->
 
   <div class="pb-5">
     <div class="container">
+			<form method="POST" action="update.php">
       <div class="row">
         <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+        <p class="text-right">
+          <a href="store.php" class="btn btn-primary"> Back to store</a>
+          <a href="clear_cart.php" class="btn btn-danger"> Clear Cart</a>
+        </p>
+          
 
           <!-- Shopping cart table -->
           <div class="table-responsive">
@@ -68,16 +74,19 @@ use App\Model\ReadRecord;
                 </tr>
               </thead>
               <tbody>
+                
               <?php
-                //initialize total
                 $total = 0;
-                if(!empty($_SESSION['cart'])){
-                //create array of initail qty which is 1
-                $index = 0;
-                if(!isset($_SESSION['qty'])){
-                    $_SESSION['qty'] = 1;
+                $qt = 0;
+              if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                $idx = 0;
+                if(!isset($_SESSION['qty_array'])){
+                  $_SESSION['qty_array'] = array_fill(0, count($_SESSION['cart']), 1);
                 }
-                // print_r($_SESSION['cart']);
+                if(!isset($_SESSION['total'])){
+                  $_SESSION['total'] = array();
+                }
+
                 $ids = implode(',',$_SESSION['cart']);
                 $readrecs = new ReadRecord;
                 $readrecs->setColumn("*");
@@ -85,57 +94,59 @@ use App\Model\ReadRecord;
                 $readrecs->setWhere("id IN ($ids)");
                 $readrecs->setData([]);
                 $products = $readrecs->readRecord();
-                // $products = $config->read("products", "*","id IN ($ids)");
+              
                 foreach ($products as $prod) { ?>
                 <tr>
                   <th scope="row" class="border-0">
                     <div class="p-2">
-                      <img src="./images/<?= $prod['name']?>" alt="" width="70" class="img-fluid rounded shadow-sm">
+                      <img src="images/<?= $prod['img']?>" alt="" width="70" class="img-fluid rounded shadow-sm">
                       <div class="ml-3 d-inline-block align-middle">
                         <h5 class="mb-0"> <a href="#" class="text-dark d-inline-block align-middle"><?= $prod['name']?></a></h5>
                       </div>
                     </div>
                   </th>
                   <td class="border-0 align-middle"><strong>$<?= $prod['price']?></strong></td>
-                  <td class="border-0 align-middle"><strong><?= $_SESSION['qty']?></strong></td>
-                  <td class="border-0 align-middle"><a href="delete.php?id=<?= $prod['id']; ?>&index=<?= $index; ?>" class="text-danger"><i class="fa fa-trash"></i></a></td>
+                  <input type="hidden" name="indexes[]" value="<?= $idx; ?>">
+                  <td class="border-0 align-middle"><strong><input type="number" style="width: 5rem;" value="<?= $_SESSION['qty_array'][$idx]; ?>" name="qty_<?= $idx; ?>"></strong></td>
+                  <td class="border-0 align-middle"><a href="delete.php?id=<?= $prod['id']?>&idx=<?= $idx; ?>" class="text-danger"><i class="fa fa-trash"></i></a></td>
                 </tr>
+                <?php $total += $_SESSION['qty_array'][$idx]*$prod['price'] ?>
                 <?php 
-				$index ++;
-                }
-						}
-						else{
-							?>
-							<tr>
-								<td colspan="4" class="text-center">No Item in Cart</td>
-							</tr>
-							<?php
-						}
- 
-					?>
+                      $_SESSION['total'][$idx] = $_SESSION['qty_array'][$idx]*$prod['price'] ?>
+                <?php $idx++; }
+                   $qt = array_sum($_SESSION['qty_array']); ?>
+                    <tr>
+                      <td>
+                        <button type="submit" class="btn btn-success" name="save">Save Changes</button>
+                      </td>
+                    </tr>
+                    <?php
+                   }
+                  else { ?>
+                <tr>
+                  <td colspan="4" class="text-center">No Item in Cart</td>
+                </tr>
+							<?php } ?>
               </tbody>
             </table>
           </div>
           <!-- End -->
         </div>
       </div>
-
+                  </form>
       <div class="row py-5 p-4 bg-white rounded shadow-sm">
         
         <div class="col-lg-12">
           <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Order summary </div>
           <div class="p-4">
-            <!-- <p class="font-italic mb-4">Shipping and additional costs are calculated based on values you have entered.</p> -->
             <ul class="list-unstyled mb-4">
               <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total Items </strong>
-              <h5 class="font-weight-bold"><?=count($_SESSION['cart'])?></h5>
+              <h5 class="font-weight-bold"><?=$qt ?></h5>
             </li>
-              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>₦ 500.00</strong></li> -->
-              <!-- <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>₦ 0.00</strong></li> -->
               <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total Price</strong>
-                <h5 class="font-weight-bold">₦ 0.00</h5>
+                <h5 class="font-weight-bold">₦ <?=$total ?></h5>
               </li>
-            </ul><a href="#" class="btn btn-dark rounded-pill py-2 btn-block">Procceed to checkout</a>
+            </ul><a href="order.php" class="btn btn-dark rounded-pill py-2 btn-block">Procceed to checkout</a>
           </div>
         </div>
       </div>

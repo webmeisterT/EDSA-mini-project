@@ -8,7 +8,6 @@
 	}
 	else{
 		$_SESSION['message'] = 'Product already in cart';
-	}
- 
-	header('location: index.php');
+	} 
+	header('location: store.php');
 ?>

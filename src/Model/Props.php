@@ -11,35 +11,35 @@ trait Props {
     public function getTable () {
         return $this->table;
     }
-    public function setTable ($tablename) {
+    public function setTable (string $tablename) {
         $this->table = $tablename;
     }
 
     public function getColumn () {
         return $this->column;
     }
-    public function setColumn ($columnname) {
+    public function setColumn (string $columnname) {
         $this->column = $columnname;
     }
 
     public function getWhere () {
         return $this->where;
     }
-    public function setWhere ($wherename) {
+    public function setWhere (string $wherename) {
         $this->where = $wherename;
     }
 
     public function getData () {
         return $this->data;
     }
-    public function setData ($dataname) {
+    public function setData (array $dataname) {
         $this->data = $dataname;
     }
 
     public function getValue () {
         return $this->value;
     }
-    public function setValue ($valuename) {
+    public function setValue (string $valuename) {
         $this->value = $valuename;
     }
 

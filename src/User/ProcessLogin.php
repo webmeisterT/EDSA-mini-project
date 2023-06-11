@@ -9,7 +9,7 @@ class ProcessLogin {
         if (!$user) {
             return false;
         } elseif ($user['password'] && password_verify($password, $user['password'])) {
-            return $user['firstname'] . ' '. $user['lastname'];
+            return [$user['id'], $user['firstname'], $user['lastname'], $user['passport']];
         } else {
            return false;
         }

@@ -1,22 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['is_logged_in'])) {
-   $_SESSION['error'] = "Please login to continue!";
+   $_SESSION['user_error'] = "Please login to continue!";
    return header('location: index.php');
 }
 require "vendor/autoload.php";
-// spl_autoload_register(function($classname) {
-//     $divide = explode("\\", $classname);
-//     $base_url = basename(__DIR__);
-//     if ($divide[0] === 'App') {
-//         $base_url = "src\\$divide[1]\\$divide[2].php";
-//     }
-//     $base_url = str_replace("\\", "/", $base_url);
-//     if (file_exists("$base_url")) {
-//         return require_once "$base_url";
-//     }
-//     exit("$base_url". " : File not found");
-// });
 use App\Model\ReadRecord;
 
 //initialize cart if not set or is unset
@@ -80,14 +68,10 @@ $products = $readrec->readRecord();
             <div class="header_section_top">
                <div class="row">
                   <div class="col-sm-12">
-                     <div class="custom_menu">
-                        <ul>
-                           <li><a href="#">Best Sellers</a></li>
-                           <li><a href="#">Gift Ideas</a></li>
-                           <li><a href="#">New Releases</a></li>
-                           <li><a href="#">Today's Deals</a></li>
-                           <li><a href="#">Customer Service</a></li>
-                        </ul>
+                     <div class="custom_menu ">                        
+                        <img src="uploads/<?= $_SESSION['user'][3]?>" alt="" width="70" class="img-fluid rounded shadow-sm">
+                        <h3 class="diaplay-4 text-white"> Welcome <?= $_SESSION['user'][1].' '.$_SESSION['user'][2] ?></h3>
+                           
                      </div>
                   </div>
                </div>
@@ -107,25 +91,8 @@ $products = $readrec->readRecord();
          <!-- logo section end -->
          <!-- header section start -->
          <div class="header_section">
-            <div class="container">
+            <div class="container">               
                <div class="containt_main">
-                  <div id="mySidenav" class="sidenav">
-                     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                     <a href="index.php">Home</a>
-                     <a href="fashion.php">Fashion</a>
-                     <a href="electronic.php">Electronic</a>
-                     <a href="jewellery.php">Jewellery</a>
-                  </div>
-                  <span class="toggle_icon" onclick="openNav()"><img src="images/toggle-icon.png"></span>
-                  <div class="dropdown">
-                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">All Category 
-                     </button>
-                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                     </div>
-                  </div>
                   <div class="main">
                      <!-- Another variation with a button -->
                      <div class="input-group">
@@ -140,12 +107,10 @@ $products = $readrec->readRecord();
                   <div class="header_box">
                      <div class="lang_box ">
                         <a href="#" title="Language" class="nav-link" data-toggle="dropdown" aria-expanded="true">
-                        <i class="fa fa-user fa-lg" aria-hidden="true"></i> <?=$_SESSION['user'] ?> <i class="fa fa-angle-down ml-2" aria-hidden="true"></i>
+                        <img src="uploads/<?= $_SESSION['user'][3]?>" alt="" width="30" class="img-fluid rounded shadow-sm"> <?= $_SESSION['user'][1]. ' '. $_SESSION['user'][2] ?> <i class="fa fa-angle-down ml-2" aria-hidden="true"></i>
                         </a>
                         <div class="dropdown-menu ">
-                           <a href="logout.php" class="dropdown-item">
-                           Logout
-                           </a>
+                           <a href="logout.php" class="dropdown-item"> Logout </a>
                         </div>
                      </div>
                      <div class="login_menu">
@@ -213,12 +178,11 @@ $products = $readrec->readRecord();
                               //info message
                               if(isset($_SESSION['message'])){
                                  ?>
-                                       <div class="alert alert-info text-center">
+                                       <div class="alert alert-info text-center alert-dismissible">
+                                          <button type="button" class="close" data-dismiss="alert">&times;</button>
                                           <?php echo $_SESSION['message']; ?>
                                        </div>
-                                 <?php
-                                 unset($_SESSION['message']);
-                              }?>
+                                 <?php unset($_SESSION['message']); } ?>
                      <!-- <h1 class="fashion_taital">Man & Woman Fashion</h1> -->
                      <div class="fashion_section_2">
                         <div class="row">
@@ -241,16 +205,16 @@ $products = $readrec->readRecord();
                   </div>
                </div>
             </div>
-            <a class="carousel-control-prev" href="#main_slider" role="button" data-slide="prev">
+            <!-- <a class="carousel-control-prev" href="#main_slider" role="button" data-slide="prev">
             <i class="fa fa-angle-left"></i>
             </a>
             <a class="carousel-control-next" href="#main_slider" role="button" data-slide="next">
             <i class="fa fa-angle-right"></i>
-            </a>
+            </a> -->
          </div>
       </div>
       <!-- footer section start -->
-      <div class="footer_section layout_padding">
+      <!-- <div class="footer_section layout_padding">
          <div class="container">
             <div class="footer_logo"><a href="index.php"><img src="images/footer-logo.png"></a></div>
             <div class="input_bt">
@@ -268,7 +232,7 @@ $products = $readrec->readRecord();
             </div>
             <div class="location_main">Help Line  Number : <a href="#">+1 1800 1200 1200</a></div>
          </div>
-      </div>
+      </div> -->
       <!-- footer section end -->
       <!-- copyright section start -->
       <div class="copyright_section">
