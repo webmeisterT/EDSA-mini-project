@@ -69,9 +69,8 @@ $products = $readrec->readRecord();
                <div class="row">
                   <div class="col-sm-12">
                      <div class="custom_menu ">                        
-                        <img src="uploads/<?= $_SESSION['user'][3]?>" alt="" width="70" class="img-fluid rounded shadow-sm">
-                        <h3 class="diaplay-4 text-white"> Welcome <?= $_SESSION['user'][1].' '.$_SESSION['user'][2] ?></h3>
-                           
+                        <img src="uploads/<?= $_SESSION['user'][3]?>" alt="" width="60" class="img-fluid rounded shadow-sm">
+                        <h3 class="d-inline diaplay-4 text-white"> Welcome <?= $_SESSION['user'][1].' '.$_SESSION['user'][2] ?></h3>
                      </div>
                   </div>
                </div>
